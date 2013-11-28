@@ -29,13 +29,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
+//*
 // Example definitions that should go in your wp-config.php
-
 define( 'SPECIAL_ADMIN_USERS', 'savvis_trunk' );
 define( 'SPECIAL_ADMIN_IPS', '127.0.0.1/32, 192.168.50.1' );
 define( 'SPECIAL_ADMIN_ALLOW_PROXY_IP', true );
-*/
+//*/
 class Special_Admin {
 
 	private static $__instance = NULL;
