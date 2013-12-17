@@ -51,6 +51,8 @@ class Special_Admin {
 	private $js_version = '131127012512';
 	private $css_version = '131127012512';
 
+	private $user_cap = 'administrator';
+
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'register_setting' ) );
 		add_action( 'admin_menu', array( &$this, 'register_settings_page' ) );
@@ -125,6 +127,17 @@ class Special_Admin {
 	 */
 	public function init_hook_always() {
 		/**
+		 * Locale setup
+		 */
+		$locale = apply_filters( 'plugin_locale', get_locale(), $this->plugin_prefix );
+		load_textdomain( $this->plugin_prefix, WP_LANG_DIR . '/' . $this->plugin_prefix . '/' . $this->plugin_prefix . '-' . $locale . '.mo' );
+		load_plugin_textdomain( $this->plugin_prefix, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'load_scripts_and_styles' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts_and_styles' ) );
+	}
+
+	public function load_scripts_and_styles() {
+		/**
 		 * If a css file for this plugin exists in ./css/wp-cron-control.css make sure it's included
 		 */
 		if ( file_exists( dirname( __FILE__ ) . "/css/" . $this->underscored_name . ".css" ) )
@@ -135,17 +148,10 @@ class Special_Admin {
 		if ( file_exists( dirname( __FILE__ ) . "/js/" . $this->underscored_name . ".js" ) )
 			wp_enqueue_script( $this->dashed_name, plugins_url( "js/" . $this->underscored_name . ".js", __FILE__ ), array(), $this->js_version, true );
 
-		/**
-		 * Locale setup
-		 */
-		$locale = apply_filters( 'plugin_locale', get_locale(), $this->plugin_prefix );
-		load_textdomain( $this->plugin_prefix, WP_LANG_DIR . '/' . $this->plugin_prefix . '/' . $this->plugin_prefix . '-' . $locale . '.mo' );
-		load_plugin_textdomain( $this->plugin_prefix, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 	}
 
 	public function register_settings_page() {
-		add_options_page( $this->settings_page_name, $this->plugin_name, 'manage_options', $this->dashed_name, array( &$this, 'settings_page' ) );
+		add_options_page( $this->settings_page_name, $this->plugin_name, $this->user_cap, $this->dashed_name, array( &$this, 'settings_page' ) );
 	}
 
 	public function register_setting() {
